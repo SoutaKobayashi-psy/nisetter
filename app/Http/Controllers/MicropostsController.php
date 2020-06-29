@@ -30,7 +30,14 @@ class MicropostsController extends Controller
         // バリデーション
         $request->validate([
             'content' => 'required|max:255',
+        ], [
+            'content.required' => ':attributeを入力してください',
+            'content.max'  => ':attributeは255文字以内で入力してください',
+        ], [
+            'content' => 'つぶやき',
         ]);
+
+
 
         // 認証済ユーザー(閲覧者)の投稿として作成(リクエストされた値をもとに作成)
         $request->user()->microposts()->create([
