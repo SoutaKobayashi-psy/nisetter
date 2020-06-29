@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\User;
+use App\Micropost;
 
 class UsersController extends Controller
 {
@@ -28,6 +29,11 @@ class UsersController extends Controller
 
         // ユーザーの投稿一覧を作成日時の降順で取得
         $microposts = $user->microposts()->orderBy('created_at', 'desc')->paginate(10);
+
+        // お気に入り数をカウントする
+        foreach ($microposts as $key => $micropost) {
+            $microposts[$key]->loadRelationshipCounts();
+        }
 
         // ユーザー詳細ビューでそれを表示
         return view('users.show', [
@@ -99,12 +105,17 @@ class UsersController extends Controller
         $user->loadRelationshipCounts();
 
         // ユーザーのフォロワー一覧を取得
-        $favorites = $user->favorites()->paginate(10);
+        $microposts = $user->favorites()->paginate(10);
+
+        // お気に入り数をカウントする
+        foreach ($microposts as $key => $micropost) {
+            $microposts[$key]->loadRelationshipCounts();
+        }
 
         // フォロー一覧ビューでそれらを表示
         return view('users.favorites', [
             'user' => $user,
-            'microposts' => $favorites,
+            'microposts' => $microposts,
         ]);
     }
 }

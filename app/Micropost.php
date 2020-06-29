@@ -12,6 +12,13 @@ class Micropost extends Model
     {
         return $this->belongsTo(User::class);
     }
+    /**
+     * この投稿に関係するモデルの件数をロードする
+     */
+    public function loadRelationshipCounts()
+    {
+        $this->loadCount(['favorite_users']);
+    }
 
     /**
      * この投稿をお気に入りしたユーザーを取得する。
@@ -21,4 +28,5 @@ class Micropost extends Model
     {
         return $this->belongsToMany(User::class, 'favorites', 'micropost_id', 'user_id');
     }
+
 }

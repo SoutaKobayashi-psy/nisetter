@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Micropost;
 
 class MicropostsController extends Controller
 {
@@ -14,6 +15,11 @@ class MicropostsController extends Controller
             $user = \Auth::user();
             // ユーザーとフォロー中ユーザーの投稿の一覧を作成日時の降順で取得
             $microposts = $user->feed_microposts()->orderBy('created_at', 'desc')->paginate(10);
+
+            // お気に入り数をカウントする
+            foreach ($microposts as $key => $micropost) {
+                $microposts[$key]->loadRelationshipCounts();
+            }
 
             $data = [
                 'user' => $user,
@@ -36,8 +42,6 @@ class MicropostsController extends Controller
         ], [
             'content' => 'つぶやき',
         ]);
-
-
 
         // 認証済ユーザー(閲覧者)の投稿として作成(リクエストされた値をもとに作成)
         $request->user()->microposts()->create([
@@ -62,6 +66,3 @@ class MicropostsController extends Controller
         return back();
     }
 }
-
-
-
