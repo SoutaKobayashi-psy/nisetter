@@ -52,6 +52,28 @@ class MicropostsController extends Controller
         return back();
     }
 
+    public function update(Request $request, $Id)
+    {
+        // バリデーション
+        $request->validate([
+            'content' => 'required|max:255',
+        ], [
+            'content.required' => ':attributeを入力してください',
+            'content.max'  => ':attributeは255文字以内で入力してください',
+        ], [
+            'content' => 'つぶやき',
+        ]);
+
+        // idの値で投稿を検索して取得
+        $micropost = Micropost::findOrFail($Id);
+        // 投稿を更新
+        $micropost->content = $request->content;
+        $micropost->save();
+
+        // トップページへリダイレクトさせる
+        return back();
+    }
+
     public function destroy($id)
     {
         // idの値で投稿を検索して取得

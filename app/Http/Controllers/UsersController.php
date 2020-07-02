@@ -43,6 +43,68 @@ class UsersController extends Controller
     }
 
     /*
+     * ユーザー情報の編集ページを表示するアクション
+     *
+     * @param $id ユーザのid
+     * @returnn \Illuminate\Http\Response
+     */
+    public function edit($id)
+    {
+        // idの値でユーザーを検索して取得
+        $user = User::findOrFail($id);
+
+        // ユーザー一覧ビューでそれを表示
+        return view('auth.register', [
+            'user' => $user,
+        ]);
+    }
+
+    /*
+     * ユーザー情報を更新するアクション
+     *
+     * @param $id ユーザのid
+     * @returnn \Illuminate\Http\Response
+     */
+    public function update(Request $request, $id)
+    {
+        // バリデーション
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users,email,'. \Auth::id(),
+            'password' => 'required|string|min:8|confirmed',
+        ], [
+            'name.required' => ':attributeを入力してください',
+            'name.string' => ':attributeは文字列で入力してください',
+            'name.max' => ':attributeは255文字以内で入力してください',
+            'email.required' => ':attributeを入力してください',
+            'email.string' => ':attributeの表記が正しくありません',
+            'email.email' => ':attributeの表記が正しくありません',
+            'email.max' => ':attributeは255文字以内で入力してください',
+            'email.unique' => 'すでにその:attributeは使用されています',
+            'password.required' => ':attributeを入力してください',
+            'password.max' => ':attributeは255文字以内で入力してください',
+            'password.min' => ':attributeは8文字以上で入力してください',
+            'password.confirmed' => '再入力用の:attributeが一致しません',
+        ], [
+            'name' => '氏名',
+            'email' => 'メールアドレス',
+            'password' => 'パスワード',
+        ]);
+
+        // idの値でユーザーを検索して取得
+        $user = User::findOrFail($id);
+
+        // ユーザー情報更新
+        $user->name = $request->name;
+        $user->email = $request->email;
+        $user->password = \Hash::make($request->password);
+        $user->save();
+
+        // トップページへリダイレクトさせる
+        return redirect('/');
+    }
+
+    /*
      * ユーザーのフォロー一覧ページを表示するアクション
      *
      * @param $id ユーザのid
@@ -104,7 +166,7 @@ class UsersController extends Controller
         // 関係するモデルの件数をロード
         $user->loadRelationshipCounts();
 
-        // ユーザーのフォロワー一覧を取得
+        // ユーザーのお気に入り一覧を取得
         $microposts = $user->favorites()->paginate(10);
 
         // お気に入り数をカウントする
