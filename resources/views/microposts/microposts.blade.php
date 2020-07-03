@@ -31,16 +31,18 @@
                             </div>
                         @endif
                     </div>
-                    <div class="edit-content-form {{ Auth::id() === $micropost->user_id ? "own-post" : "" }}">
+                    @if (Auth::id() === $micropost->user_id)
+                    <div class="edit-content-form">
                         {{-- 投稿内容を編集する --}}
                         {!! Form::model($micropost, ['route' => ['microposts.update', $micropost->id], 'method' => 'put' ]) !!}
                             {!! Form::textarea('content', old('content'), ['class' => 'form-control']) !!}
                         <div class="d-flex">
-                            <span class="btn btn-light mr-3 edit-cancel {{ Auth::id() === $micropost->user_id ? "own-post" : "" }}">キャンセル</span>
-                            {!! Form::submit('変更を保存する', ['class' => 'btn btn-primary']) !!}
+                            <span class="btn btn-light mr-3 edit-cancel">キャンセル</span>
+                            <span class="btn btn-primary micropost-update-submit">変更を保存する</span>
                         </div>
                         {!! Form::close() !!}
                     </div>
+                    @endif
                     <div class="d-flex align-items-center">
                         <i class="fas fa-heart"></i><span class="ml-1 mr-3">{{ $micropost->favorite_users_count }}</span>
                         @include('favorites.favorite_button')
