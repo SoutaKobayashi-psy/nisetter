@@ -3,3 +3,7 @@
 .edit-content-form {
     display:none;
 }
+
+.highlight-list:hover {
+    background: #EEEEEE;
+}

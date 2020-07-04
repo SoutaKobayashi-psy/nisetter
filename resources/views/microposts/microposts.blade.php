@@ -1,7 +1,7 @@
 @if (count($microposts) > 0)
     <ul class="list-unstyled">
         @foreach ($microposts as $micropost)
-            <li class="media mb-3">
+            <li class="media mb-3 highlight-list">
                 {{-- 投稿の所有者のメールアドレスをもとにgravatarを取得して表示 --}}
                 <img class="mr-2 rouded" src="{{ Gravatar::get($micropost->user->email, ['size' => 50]) }}" alt="">
                 <div class="media-body">
