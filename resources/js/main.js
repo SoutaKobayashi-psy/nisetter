@@ -41,7 +41,7 @@ $(function() {
 			}).done(function (results){
 				// 表示テキストを更新後に上書き
 				var newcontent = $($update_submit[i]).parent().parent().find('textarea[name=content]').val();
-				$($update_submit[i]).parents('.media-body').find('.show-content p').text(newcontent);
+				$($update_submit[i]).parents('.media-body').find('.show-content p').textWithLF(newcontent);
 				// 編集フォームを閉じる
 				$($update_submit[i]).parents('.media-body').find('.edit-content-form').hide();
 				$($update_submit[i]).parents('.media-body').find('.show-content').addClass('d-flex').show();
